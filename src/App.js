@@ -26,15 +26,12 @@ class App extends React.Component {
 
         userRef.onSnapshot(snapShot => {
           //onSnapshot it will give us a listener and keep the subscription open also get back the first stage of the data
-          this.setState(
-            {
-              currentUser: {
-                id: snapShot.id,
-                ...snapShot.data()
-              }
-            },
-            () => console.log(this.state)
-          );
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          });
         });
       } else {
         this.setState({ currentUser: userAuth }); //If no user then equivalent to currentUser: null
