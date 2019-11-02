@@ -24,6 +24,13 @@ class SignIn extends React.Component {
       this.setState({ email: '', password: '' });
       //To clear the field
     } catch (err) {
+      let errorCode = err.code;
+      let errorMessage = err.message;
+      if (errorCode === 'auth/wrong-password') {
+        alert('Wrong password.');
+      } else {
+        alert(errorMessage);
+      }
       console.log(err.message);
     }
   };
