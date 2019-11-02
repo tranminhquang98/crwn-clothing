@@ -5,7 +5,7 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
-import { auth } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 class App extends React.Component {
   constructor() {
@@ -19,16 +19,31 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      //return a function we can call to close this subscription
-      this.setState({ currentUser: user });
-      console.log(user);
-    }); //this is a method on the auth library that we get from firebase, the auth will send that user authenticated object everytime unti they sign out
-    //the moment we call this method on the auth library and pass it a function, the observer has been initialized with the function we've passed, and the auth library is going to call this function whenever a new subscription "event" occurs (whether its a login, or logout). We are indeed setting the code for subscribing, but we are also initializing/opening the subscription at the same time.
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      //Take a function as the argument! The function has the signature with a prop of userAuth (which is just what we called it, you can call it anything you want) passed as the property into our function definition. This userAuth object we don't assign the value, it's actually what we get from the firestore auth libraries onAuthStateChanged method. Whenever the user auth state changes from logging in or logging out, our function gets invoked with that object (or null if its a sign out).
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth); //If there was a document there just return get back userRef, otherwise create a new document and then still return the ref
+
+        userRef.onSnapshot(snapShot => {
+          //onSnapshot it will give us a listener and keep the subscription open also get back the first stage of the data
+          this.setState(
+            {
+              currentUser: {
+                id: snapShot.id,
+                ...snapShot.data()
+              }
+            },
+            () => console.log(this.state)
+          );
+        });
+      } else {
+        this.setState({ currentUser: userAuth }); //If no user then equivalent to currentUser: null
+      }
+    });
   }
 
   componentWillUnmount() {
-    this.unsubscribeFromAuth(); //close subscription
+    this.unsubscribeFromAuth(); //It is a function we get back from auth.onAuthStateChanged. Because we want to close the channel when we're about to remove our component from the DOM because that's when we don't need the component anymore, therefore we also don't need the subscription listening
   }
 
   render() {

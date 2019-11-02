@@ -17,7 +17,7 @@ class SignIn extends React.Component {
   handleSubmit = event => {
     event.preventDefault();
     this.setState({ email: '', password: '' });
-    // to clear the field
+    //To clear the field
   };
 
   handleChange = event => {
