@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import './App.css';
 import { connect } from 'react-redux';
 import HomePage from './pages/homepage/homepage.component';
@@ -44,12 +44,27 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
-          <Route path="/signin" component={SignInAndSignUpPage} />
+          <Route
+            exact
+            path="/signin"
+            render={() =>
+              //js invokecation that determines what component to return
+              this.props.currentUser ? (
+                <Redirect to="/" />
+              ) : (
+                <SignInAndSignUpPage />
+              )
+            }
+          />
         </Switch>
       </div>
     );
   }
 }
+
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser
+});
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user)) //In order for our components to send these actions to our reducers, we need to use a function called dispatch that the connect() function gives us from react-redux. dispatch() receives an action onject that is it going to pass to every reducer. To access this dispatch function, we get it as the parameter of our mapDispatchToProps() function which is the second argument we give to connect(). The keys on this object will end up being part of the props that get passed into the component we are calling our connect on (setCurrentUser in class App)
@@ -58,7 +73,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(App);
 
