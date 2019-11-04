@@ -77,4 +77,4 @@ export default connect(
   mapDispatchToProps
 )(App);
 
-//so you can think mapDispatchToProps that pass redux setState to your props, while mapStateToProps mapping redux state to props
+//So you can think mapDispatchToProps that pass redux setState to your props, while mapStateToProps mapping redux state to props

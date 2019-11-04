@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux'; //the connect function is a higher order component that lets us modify our component to have access to things related to redux
+import { connect } from 'react-redux'; //The connect function is a higher order component that lets us modify our component to have access to things related to redux
 import { auth } from '../../firebase/firebase.utils';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
@@ -34,13 +34,13 @@ const Header = ({ currentUser, hidden }) => (
   </div>
 );
 
-// When we pass connect our mapStateToProps function, it's expecting that we will have declared the parameter of state, and connect will give it our entire redux state (which is what gets returned by our root reducer)
+//When we pass connect our mapStateToProps function, it's expecting that we will have declared the parameter of state, and connect will give it our entire redux state (which is what gets returned by our root reducer)
 //state is mapped to component props by mapStateToProps
 const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
-  //nested destructuring
+  //Nested destructuring
   currentUser,
   hidden
 });
 
 export default connect(mapStateToProps)(Header);
-// the currentUser argument above in the Header function is what passed in from the mapStateToProps
+//The currentUser argument above in the Header function is what passed in from the mapStateToProps
