@@ -3,7 +3,9 @@ const INITIAL_STATE = {
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
-  switch (action.type) {
+  switch (
+    action.type //Redux check all red to find any match cases(s)
+  ) {
     case 'SET_CURRENT_USER':
       return {
         ...state,
