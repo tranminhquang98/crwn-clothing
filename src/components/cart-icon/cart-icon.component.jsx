@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { toggleCartHidden } from '../../redux/cart/cart.actions';
 import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
 import { ReactComponent as ShoppingIcon } from '../../assets/shopping-bag.svg';
@@ -16,12 +17,15 @@ const maptDispatchToProps = dispatch => ({
   toggleCartHidden: () => dispatch(toggleCartHidden())
 });
 
-const mapStateToProps = state => ({
-  // itemCount: cartItems.reduce(
-  //   (accumalatedQuantity, cartItem) => accumalatedQuantity + cartItem.quantity,
-  //   0
-  // )
-  itemCount: selectCartItemsCount(state)
+// const mapStateToProps = ({ cart: { cartItems } }) => ({
+//   itemCount: cartItems.reduce(
+//     (accumalatedQuantity, cartItem) => accumalatedQuantity + cartItem.quantity,
+//     0
+//   )
+// });
+
+const mapStateToProps = createStructuredSelector({
+  itemCount: selectCartItemsCount
   //Since when state change, store will run every mounted component's mapStateToProps. To prevent unnecessary rendering, use selector
 });
 
