@@ -15,3 +15,21 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
   return [...cartItems, { ...cartItemToAdd, quantity: 1 }];
   //Quantity property gets attached the first time around since this if block won't run when it's a new item
 };
+
+export const removeItemFromCart = (cartItems, cartItemToRemove) => {
+  const existingCartItem = cartItems.find(
+    cartItem => cartItem.id === cartItemToRemove.id
+  );
+
+  //If quantity is already at 1 then remove that item
+  if (existingCartItem.quantity === 1) {
+    return cartItems.filter(cartItem => cartItem.id !== cartItemToRemove.id);
+  }
+
+  //Decrease the quantity
+  return cartItems.map(cartItem =>
+    cartItem.id === cartItemToRemove.id
+      ? { ...cartItem, quantity: cartItem.quantity - 1 }
+      : cartItem
+  );
+};
