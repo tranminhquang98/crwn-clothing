@@ -41,6 +41,7 @@ class App extends React.Component {
   }
 
   render() {
+    //For the ShopPage component, If you set it as exact, the moment you add additional route parameters after the exact route specified, it will unmatch and unmount the component!
     return (
       <div>
         <Header />
@@ -52,7 +53,7 @@ class App extends React.Component {
             exact
             path="/signin"
             render={() =>
-              //js invokecation that determines what component to return
+              //JS invokecation that determines what component to return
               this.props.currentUser ? (
                 <Redirect to="/" />
               ) : (
