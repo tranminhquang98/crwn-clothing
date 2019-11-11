@@ -13,6 +13,8 @@ const config = {
   measurementId: 'G-V1XNRY75GY'
 };
 
+firebase.initializeApp(config);
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
 
@@ -40,7 +42,44 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
-firebase.initializeApp(config);
+//Automatically import data from an object to firestore
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectionKey); //Get the collectionRef
+
+  //We want to know that if we hit our addCollectionAndDocuments function and all of our requests send, all of them should set(the data). If any of them fail, we want the whole thing to fail because then we can anticipate that, we know that our code is consistent.
+  const batch = firestore.batch();
+  //batch() write is essentially a way to batch or group all our calls together into one big request. The batch object we just add all of our set() into it and then we fire off whenever we're done adding all the calls we want to it
+
+  objectsToAdd.forEach(obj => {
+    const newDocRef = collectionRef.doc(); //Create a new document reference at this collection and randomly generate an Id
+    batch.set(newDocRef, obj);
+  });
+
+  return await batch.commit(); //.commit() will fire off our batch request, it returns back a promise. When commit succeeds it will resolve a null value
+};
+
+export const convertCollectionSnapshotToMap = collections => {
+  const transformedCollection = collections.docs.map(doc => {
+    const { title, items } = doc.data();
+
+    return {
+      routeName: encodeURI(title.toLowerCase()), //Pass the method some string and it'll give you back a string where any characters that a URL cannot actually handle or process such as certain symbols spaces or whatever that you actually never see in a URL, it will make sure to convert them into a version that the URL can actually read
+      id: doc.id,
+      title,
+      items
+    };
+  });
+  //What we did here is get all the documents in the "collections" and map over it, destructuring the title and items array, then return a new object with routeName and id append to it for our front end. Finally, a new array with the newly created objects will be used
+
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+  //To transform the array into an object where each key is the title of the document, similar to what we've in shop.data
+};
 
 export const auth = firebase.auth(); //Export when we need to use anything related to authentication
 export const firestore = firebase.firestore();

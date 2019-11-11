@@ -8,15 +8,20 @@ import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import CheckoutPage from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import {
+  auth,
+  createUserProfileDocument
+  // addCollectionAndDocuments //(1)
+} from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
+// import { selectCollectionsForPreview } from './redux/shop/shop.selectors'; //(2)
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props;
+    const { setCurrentUser } = this.props; //(3) ,collectionsArray
 
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       //Take a function as the argument! The function has the signature with a prop of userAuth (which is just what we called it, you can call it anything you want) passed as the property into our function definition. This userAuth object we don't assign the value, it's actually what we get from the firestore auth libraries onAuthStateChanged method. Whenever the user auth state changes from logging in or logging out, our function gets invoked with that object (or null if its a sign out).
@@ -24,7 +29,7 @@ class App extends React.Component {
         const userRef = await createUserProfileDocument(userAuth); //If there was a document there just return get back userRef, otherwise create a new document and then still return the ref
 
         userRef.onSnapshot(snapShot => {
-          //onSnapshot it will give us a listener and keep the subscription open also get back the first stage of the data
+          //onSnapshot it will give us a listener and keep the subscription open also get back the first stage of the data and then call the setCurrentUser action creator method
           setCurrentUser({
             id: snapShot.id,
             ...snapShot.data()
@@ -33,6 +38,10 @@ class App extends React.Component {
       } else {
         setCurrentUser(userAuth); //If no user then equivalent to currentUser: null
       }
+      // addCollectionAndDocuments(
+      //   'collections',
+      //   collectionsArray.map(({ title, items }) => ({ title, items }))
+      // ); //This collectionsArray.map() will be returning us an array of just objects with the values that we want to keep (not id and routeName) //(4)
     });
   }
 
@@ -69,6 +78,7 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
+  // collectionsArray: selectCollectionsForPreview //(5)
 });
 
 const mapDispatchToProps = dispatch => ({
