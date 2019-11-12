@@ -27,12 +27,26 @@ class ShopPage extends React.Component {
     const { updateCollections } = this.props;
     const collectionRef = firestore.collection('collections');
 
-    //Whenever the collectionRef updates or whenever this code gets run for the first time, this collectionRef will send us the snapshot representing the code of our collection objects array at the time when this code renders
-    collectionRef.onSnapshot(snapshot => {
+    //Observer pattern, whenever the collectionRef updates or whenever this code gets run for the first time, this collectionRef will send us the snapshot representing the code of our collection objects array at the time when this code renders
+    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(snapshot => {
+    //   const collectionsMap = convertCollectionSnapshotToMap(snapshot); //Takes the snapshot array of objects and perform data normalization
+    //   updateCollections(collectionsMap);
+    //   this.setState({ loading: false });
+    // });
+
+    //Promise style, the caveat here is that the only time we'll ever get new data from our back end is when we remount our shop.component. This is because we're no longer leveraging the live updates stream style that the observable pattern lended us when we are using onSnapshot()
+    collectionRef.get().then(snapshot => {
       const collectionsMap = convertCollectionSnapshotToMap(snapshot); //Takes the snapshot array of objects and perform data normalization
       updateCollections(collectionsMap);
       this.setState({ loading: false });
     });
+
+    //Turns out to be unnecessary long
+    // fetch(
+    //   'https://firestore.googleapis.com/v1/projects/crwn-db-a546e/databases/(default)/documents/collections'
+    // )
+    //   .then(response => response.json())
+    //   .then(console.log);
   }
 
   render() {
