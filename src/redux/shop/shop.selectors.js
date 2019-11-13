@@ -19,3 +19,13 @@ export const selectCollection = collectionUrlParam =>
     [selectCollections],
     collections => (collections ? collections[collectionUrlParam] : null) //Data normalization, dynamically select the object
   );
+
+export const selectIsCollectionFetching = createSelector(
+  [selectShop],
+  shop => shop.isFetching
+);
+
+export const selectIsCollectionsLoaded = createSelector(
+  [selectShop],
+  shop => !!shop.collections //!! convert null or object value to a boolean false or true
+);

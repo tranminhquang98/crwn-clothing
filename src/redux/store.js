@@ -2,8 +2,9 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore } from 'redux-persist';
 import logger from 'redux-logger'; //Nice to use when debugging redux code
 import rootReducer from './root-reducer';
+import thunk from 'redux-thunk'; //It's a middleware that allows us to fire functions
 
-const middlewares = []; //Just the functions from redux-logger
+const middlewares = [thunk]; //Just the functions from redux-logger
 
 if (process.env.NODE_ENV === 'development') {
   middlewares.push(logger);
