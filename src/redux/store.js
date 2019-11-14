@@ -1,10 +1,15 @@
 import { createStore, applyMiddleware } from 'redux';
 import { persistStore } from 'redux-persist';
 import logger from 'redux-logger'; //Nice to use when debugging redux code
+import createSagaMiddleware from 'redux-saga'; //We're now replacing thunk with redux-saga to handle out asynchronous actions inside of redux
 import rootReducer from './root-reducer';
-import thunk from 'redux-thunk'; //It's a middleware that allows us to fire functions
+import rootSaga from './root-saga';
 
-const middlewares = [thunk]; //Just the functions from redux-logger
+// import thunk from 'redux-thunk'; //It's a middleware that allows us to fire functions
+
+const sagaMiddleware = createSagaMiddleware();
+
+const middlewares = [sagaMiddleware]; //Just the functions from redux-logger
 
 if (process.env.NODE_ENV === 'development') {
   middlewares.push(logger);
@@ -13,5 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 
 export const store = createStore(rootReducer, applyMiddleware(...middlewares)); //Spread in all of the methods or all of the values of the "middlewares" array into the function call as individual arguments
 //The actual value of the redux state lives inside of our store object created using createStore that passed into the Provider component in index.js
+
+sagaMiddleware.run(rootSaga); //Just like a root reducer, we're going to make a root saga that issues and calls all of our other sagas, otherwise we have to write sagaMiddleware.run() individually
 
 export const persistor = persistStore(store); //A persisted version of our store
