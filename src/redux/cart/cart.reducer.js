@@ -34,6 +34,11 @@ const cartReducer = (state = INITIAL_STATE, action) => {
           cartItem => cartItem.id !== action.payload.id
         ) //If the cartItem.id does match the item's id that we are trying to remove from the payload then remove it, if not then keep it
       };
+    case CartActionTypes.CLEAR_CART:
+      return {
+        ...state,
+        cartItems: []
+      };
     default:
       return state;
   }

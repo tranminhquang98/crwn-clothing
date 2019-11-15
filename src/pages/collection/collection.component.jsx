@@ -7,9 +7,9 @@ import './collection.styles.scss';
 const CollectionPage = ({ collection }) => {
   const { title, items } = collection;
   return (
-    <div className="collection-page">
-      <h2 className="title">{title} Collection</h2>
-      <div className="items">
+    <div className='collection-page'>
+      <h2 className='title'>{title} Collection</h2>
+      <div className='items'>
         {items.map(item => (
           <CollectionItem key={item.id} item={item} />
         ))}
@@ -22,7 +22,7 @@ const CollectionPage = ({ collection }) => {
 const mapStateToProps = (state, ownProps) => ({
   collection: selectCollection(ownProps.match.params.collectionId)(state)
   //Because this selectCollection is returning our createSelector call, our selector call pretty much returns a function that takes the state and then runs it through the selector flow
-  //The difference from this one and all others is all others use createStructuredSelector()
+  //The difference from this one and all others is all others use createStructuredSelector() without the need of passing state as a parameter
 });
 
 export default connect(mapStateToProps)(CollectionPage);

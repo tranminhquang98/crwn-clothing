@@ -1,4 +1,4 @@
-import { takeLatest, call, put } from 'redux-saga/effects'; //It listens for every action of a specific type that we pass to it
+import { takeLatest, call, put, all } from 'redux-saga/effects'; //It listens for every action of a specific type that we pass to it
 import {
   firestore,
   convertCollectionSnapshotToMap
@@ -30,6 +30,10 @@ export function* fetchCollectionsStart() {
     fetchCollectionsAsync
   );
   //the 2nd paramater that takeEvery gets is another generator function that will run in response to this takeLastest listener
+}
+
+export function* shopSagas() {
+  yield all([call(fetchCollectionsStart)]);
 }
 
 //What's happening is that we're yielding control over this saga back to the saga middleware, and the saga middleware, if it gets another takeEvery action call from the same place, it can then determine whether or not to cancel any of the previously started sagas from the other actions that came in.

@@ -10,6 +10,7 @@ import CheckoutPage from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
 // import { addCollectionAndDocuments } from './firebase/firebase.utils'; //(1)
 import { selectCurrentUser } from './redux/user/user.selectors';
+import { checkUserSession } from './redux/user/user.actions';
 // import { selectCollectionsForPreview } from './redux/shop/shop.selectors'; //(2)
 
 class App extends React.Component {
@@ -17,21 +18,8 @@ class App extends React.Component {
 
   componentDidMount() {
     // const { coolectionsArray } = this.props; //(3)
-    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-    //   //Take a function as the argument! The function has the signature with a prop of userAuth (which is just what we called it, you can call it anything you want) passed as the property into our function definition. This userAuth object we don't assign the value, it's actually what we get from the firestore auth libraries onAuthStateChanged method. Whenever the user auth state changes from logging in or logging out, our function gets invoked with that object (or null if its a sign out).
-    //   if (userAuth) {
-    //     const userRef = await createUserProfileDocument(userAuth); //If there was a document there just return get back userRef, otherwise create a new document and then still return the ref
-    //     userRef.onSnapshot(snapShot => {
-    //       //onSnapshot it will give us a listener and keep the subscription open also get back the first stage of the data and then call the setCurrentUser action creator method
-    //       setCurrentUser({
-    //         id: snapShot.id,
-    //         ...snapShot.data()
-    //       });
-    //     });
-    //   } else {
-    //     setCurrentUser(userAuth); //If no user then equivalent to currentUser: null
-    //   }
-    // });
+    const { checkUserSession } = this.props;
+    checkUserSession();
     // addCollectionAndDocuments(
     //   'collections',
     //   collectionsArray.map(({ title, items }) => ({ title, items }))
@@ -74,4 +62,8 @@ const mapStateToProps = createStructuredSelector({
   // collectionsArray: selectCollectionsForPreview //(5)
 });
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+  checkUserSession: () => dispatch(checkUserSession())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

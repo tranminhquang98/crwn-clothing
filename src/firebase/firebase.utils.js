@@ -81,6 +81,20 @@ export const convertCollectionSnapshotToMap = collections => {
   //To transform the array into an object where each key is the title of the document, similar to what we've in shop.data
 };
 
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(
+      //Take a function as the argument! The function has the signature with a prop of userAuth (which is just what we called it, you can call it anything you want) passed as the property into our function definition. This userAuth object we don't assign the value, it's actually what we get from the firestore auth libraries onAuthStateChanged method. Whenever the user auth state changes from logging in or logging out, our function gets invoked with that object (or null if its a sign out).
+      userAuth => {
+        unsubscribe(); //It is a function we get back from auth.onAuthStateChanged. Because we want to close the channel when we're about to remove our component from the DOM because that's when we don't need the component anymore, therefore we also don't need the subscription listening
+        //Immidiately unsubscribe because we just need to know whether or not there is a logging in or out for the sage to dispatch action to the reducer
+        resolve(userAuth);
+      },
+      reject
+    );
+  });
+};
+
 export const auth = firebase.auth(); //Export when we need to use anything related to authentication
 export const firestore = firebase.firestore();
 
