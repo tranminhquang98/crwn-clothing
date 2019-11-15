@@ -85,8 +85,8 @@ export const auth = firebase.auth(); //Export when we need to use anything relat
 export const firestore = firebase.firestore();
 
 //Set up Google Authentication Utility
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' }); //We want to always trigger the google popup whenever we use the GoogleAuthProvider for authentication and sign in
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' }); //We want to always trigger the google popup whenever we use the GoogleAuthProvider for authentication and sign in
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;

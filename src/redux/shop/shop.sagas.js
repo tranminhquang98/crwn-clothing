@@ -29,7 +29,7 @@ export function* fetchCollectionsStart() {
     ShopActionTypes.FETCH_COLLECTIONS_START,
     fetchCollectionsAsync
   );
-  //the 2nd paramater that takeEvery gets is another generator function that will run in response to this takeEvery listener
+  //the 2nd paramater that takeEvery gets is another generator function that will run in response to this takeLastest listener
 }
 
 //What's happening is that we're yielding control over this saga back to the saga middleware, and the saga middleware, if it gets another takeEvery action call from the same place, it can then determine whether or not to cancel any of the previously started sagas from the other actions that came in.

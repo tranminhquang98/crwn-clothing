@@ -8,12 +8,7 @@ import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import CheckoutPage from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
-import {
-  auth,
-  createUserProfileDocument
-  // addCollectionAndDocuments //(1)
-} from './firebase/firebase.utils';
-import { setCurrentUser } from './redux/user/user.actions';
+// import { addCollectionAndDocuments } from './firebase/firebase.utils'; //(1)
 import { selectCurrentUser } from './redux/user/user.selectors';
 // import { selectCollectionsForPreview } from './redux/shop/shop.selectors'; //(2)
 
@@ -21,28 +16,26 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props; //(3) ,collectionsArray
-
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      //Take a function as the argument! The function has the signature with a prop of userAuth (which is just what we called it, you can call it anything you want) passed as the property into our function definition. This userAuth object we don't assign the value, it's actually what we get from the firestore auth libraries onAuthStateChanged method. Whenever the user auth state changes from logging in or logging out, our function gets invoked with that object (or null if its a sign out).
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth); //If there was a document there just return get back userRef, otherwise create a new document and then still return the ref
-
-        userRef.onSnapshot(snapShot => {
-          //onSnapshot it will give us a listener and keep the subscription open also get back the first stage of the data and then call the setCurrentUser action creator method
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data()
-          });
-        });
-      } else {
-        setCurrentUser(userAuth); //If no user then equivalent to currentUser: null
-      }
-      // addCollectionAndDocuments(
-      //   'collections',
-      //   collectionsArray.map(({ title, items }) => ({ title, items }))
-      // ); //This collectionsArray.map() will be returning us an array of just objects with the values that we want to keep (not id and routeName) //(4)
-    });
+    // const { coolectionsArray } = this.props; //(3)
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    //   //Take a function as the argument! The function has the signature with a prop of userAuth (which is just what we called it, you can call it anything you want) passed as the property into our function definition. This userAuth object we don't assign the value, it's actually what we get from the firestore auth libraries onAuthStateChanged method. Whenever the user auth state changes from logging in or logging out, our function gets invoked with that object (or null if its a sign out).
+    //   if (userAuth) {
+    //     const userRef = await createUserProfileDocument(userAuth); //If there was a document there just return get back userRef, otherwise create a new document and then still return the ref
+    //     userRef.onSnapshot(snapShot => {
+    //       //onSnapshot it will give us a listener and keep the subscription open also get back the first stage of the data and then call the setCurrentUser action creator method
+    //       setCurrentUser({
+    //         id: snapShot.id,
+    //         ...snapShot.data()
+    //       });
+    //     });
+    //   } else {
+    //     setCurrentUser(userAuth); //If no user then equivalent to currentUser: null
+    //   }
+    // });
+    // addCollectionAndDocuments(
+    //   'collections',
+    //   collectionsArray.map(({ title, items }) => ({ title, items }))
+    // ); //This collectionsArray.map() will be returning us an arrays of just objects with the values that we want to keep (not id and routeName) //(4)
   }
 
   componentWillUnmount() {
@@ -55,16 +48,16 @@ class App extends React.Component {
       <div>
         <Header />
         <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route path="/shop" component={ShopPage} />
-          <Route exact path="/checkout" component={CheckoutPage} />
+          <Route exact path='/' component={HomePage} />
+          <Route path='/shop' component={ShopPage} />
+          <Route exact path='/checkout' component={CheckoutPage} />
           <Route
             exact
-            path="/signin"
+            path='/signin'
             render={() =>
               //JS invokecation that determines what component to return
               this.props.currentUser ? (
-                <Redirect to="/" />
+                <Redirect to='/' />
               ) : (
                 <SignInAndSignUpPage />
               )
@@ -81,15 +74,4 @@ const mapStateToProps = createStructuredSelector({
   // collectionsArray: selectCollectionsForPreview //(5)
 });
 
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user)) //In order for our components to send these actions to our reducers, we need to use a function called dispatch that the connect() function gives us from react-redux. dispatch() receives an action onject that is it going to pass to every reducer. To access this dispatch function, we get it as the parameter of our mapDispatchToProps() function which is the second argument we give to connect(). The keys on this object will end up being part of the props that get passed into the component we are calling our connect on (setCurrentUser in class App)
-
-  //What we are actually doing is defining a function that takes a user argument as the value for the setCurrentUser function we are defining! The user object we are actually getting from the auth.onAuthStateChanged method or our own firebase utils method which will provide us with some user object that we are passing to this function we have defined. We then want to dispatch() our action using our action creator function that expects a user object. So what we are doing is taking the user object from firebase, passing it into our function that we defined in mapDispatchToProps, which then passes it to our action creator setCurrentUser from our user.actions.js
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
-
-//So you can think mapDispatchToProps that pass redux setState to your props, while mapStateToProps mapping redux state to props
+export default connect(mapStateToProps)(App);
