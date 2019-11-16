@@ -73,7 +73,7 @@ export function* signOut() {
 export function* signUp({ payload: { displayName, email, password } }) {
   try {
     const { user } = yield auth.createUserWithEmailAndPassword(email, password);
-    yield put(signUpSuccess({ user, additionalData: { displayName } }));
+    yield put(signUpSuccess({ user, additionalData: { displayName } })); //Pass the user get back from auth library, along with the displayName as an object to the signUpSuccess action
   } catch (error) {
     yield put(signUpFailure(error));
   }
@@ -104,7 +104,7 @@ export function* onSignUpStart() {
 }
 
 export function* onSignUpSuccess() {
-  yield takeLatest(UserActionTypes.SIGN_UP_SUCCESS, signInAfterSignUp);
+  yield takeLatest(UserActionTypes.SIGN_UP_SUCCESS, signInAfterSignUp); //signInAfterSignUp will receive the object that was passed to signUpSuccess action
 }
 
 export function* userSagas() {
