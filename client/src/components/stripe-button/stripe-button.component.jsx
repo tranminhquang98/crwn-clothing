@@ -1,5 +1,6 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout';
+import axios from 'axios'; //Make it much easier to make post request
 
 const StripeCheckoutButton = ({ price }) => {
   const priceForStripe = price * 100;
@@ -7,20 +8,35 @@ const StripeCheckoutButton = ({ price }) => {
 
   //token is the onSuccess callback that triggers when we submit, backend would handle the charge
   const onToken = token => {
-    console.log(token);
-    alert('Payment Successful');
+    axios({
+      url: 'payment',
+      method: 'post',
+      data: {
+        amount: priceForStripe,
+        token
+      }
+    })
+      .then(response => {
+        alert('Payment successful');
+      })
+      .catch(error => {
+        console.log('Payment error: ', error);
+        alert(
+          'There was an issue with your payment! Please make sure you use the provided credit card.'
+        );
+      });
   };
 
   return (
     <StripeCheckout
-      label="Pay Now"
-      name="CRWN Clothing Ltd."
+      label='Pay Now'
+      name='CRWN Clothing Ltd.'
       billingAddress
       shippingAddress
-      image="https://sendeyo.com/up/d/f3eb2117da"
+      image='https://sendeyo.com/up/d/f3eb2117da'
       description={`Your total is $${price}`}
       amount={priceForStripe}
-      panelLabel="Pay Now"
+      panelLabel='Pay Now'
       token={onToken}
       stripeKey={publishableKey}
     />
