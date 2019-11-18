@@ -12,7 +12,7 @@ const ShopPage = ({ fetchCollectionsStart, match }) => {
   }, [fetchCollectionsStart]); //So this doesn't get triggered twice when our App component reload to check for user authentication => in turn re-render our shop.component
 
   return (
-    ////shop.component in App.js is being nested in a route and route automatically passes match, history, location into our component as props
+    //shop.component in App.js is being nested in a route and route automatically passes match, history, location into our component as props
     <div className='shop-page'>
       <Route
         exact
