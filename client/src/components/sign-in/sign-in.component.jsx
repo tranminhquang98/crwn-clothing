@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
-import './sign-in.styles.scss';
 import {
   googleSignInStart,
   emailSignInStart
 } from '../../redux/user/user.actions';
+import {
+  SignInContainer,
+  SignInTitle,
+  ButtonsBarContainer
+} from './sign-in.styles';
 
 const SignIn = ({ emailSignInStart, googleSignInStart }) => {
   const [userCredentials, setCredentials] = useState({
@@ -28,16 +32,17 @@ const SignIn = ({ emailSignInStart, googleSignInStart }) => {
   };
 
   return (
-    <div className='sign-in'>
-      <h2>I already have an account</h2>
+    <SignInContainer>
+      <SignInTitle>I already have an account</SignInTitle>
       <span>Sign in with your email and password</span>
+
       <form onSubmit={handleSubmit}>
         <FormInput
           name='email'
           type='email'
-          value={email}
           handleChange={handleChange}
-          label='email'
+          value={email}
+          label='Email'
           required
         />
         <FormInput
@@ -45,11 +50,11 @@ const SignIn = ({ emailSignInStart, googleSignInStart }) => {
           type='password'
           value={password}
           handleChange={handleChange}
-          label='password'
+          label='Password'
           required
         />
-        <div className='buttons'>
-          <CustomButton type='submit'>Sign in</CustomButton>
+        <ButtonsBarContainer>
+          <CustomButton type='submit'> Sign in </CustomButton>
           <CustomButton
             type='button' //Our button will not trigger the submit form, if not specified will behave like submit
             onClick={googleSignInStart}
@@ -57,9 +62,9 @@ const SignIn = ({ emailSignInStart, googleSignInStart }) => {
           >
             Sign in with Google
           </CustomButton>
-        </div>
+        </ButtonsBarContainer>
       </form>
-    </div>
+    </SignInContainer>
   );
 };
 

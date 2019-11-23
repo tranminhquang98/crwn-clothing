@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 import { signUpStart } from '../../redux/user/user.actions';
+import './sign-up.styles.scss';
 
 const SignUp = ({ signUpStart }) => {
   //     Property       Function to set state
