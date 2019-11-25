@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path'); //Lets us build out pathing for our directories
+const compression = require('compression');
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config(); //This loads the dotenv into our process environment which allows our process.env now to access that secret key
 
@@ -10,6 +11,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.use(compression);
 app.use(bodyParser.json()); //parse input
 app.use(bodyParser.urlencoded({ extended: true })); //urlencoded is a way for us to make sure that the URL strings we're getting in and we're passing out do not contain things lkke spaces or symbols
 
