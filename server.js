@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path'); //Lets us build out pathing for our directories
 const compression = require('compression');
+const enforce = require('express-sslify');
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config(); //This loads the dotenv into our process environment which allows our process.env now to access that secret key
 
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true })); //urlencoded is a way for us
 app.use(cors()); //Cross-Origin Request so we're actually able to properly make requests to our backend server
 
 if (process.env.NODE_ENV === 'production') {
+  app.use(enforce.HTTPS({ trustProtoHeader: true }));
   app.use(express.static(path.join(__dirname, 'client/build')));
   app.get('*', function(req, res) {
     //For every route that is not covered by the future route we write
@@ -28,6 +30,11 @@ if (process.env.NODE_ENV === 'production') {
 app.listen(port, error => {
   if (error) throw error;
   console.log('Server running on port ' + port);
+});
+
+//Whenever an application requests our app to provide something from this route, we're just going to go into our build foler, get the service-worker.js
+app.get('/service-worker.js', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '..', 'build', 'service-worker.js'));
 });
 
 app.post('/payment', (req, res) => {
