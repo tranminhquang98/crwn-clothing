@@ -45,7 +45,7 @@ export function* signInWithEmail({ payload: { email, password } }) {
   } catch (error) {
     let errorCode = error.code;
     if (errorCode === 'auth/wrong-password') {
-      alert('Wrong password.');
+      alert('Wrong password, please enter a correct password!');
     }
     put(signInFailure(error));
   }
